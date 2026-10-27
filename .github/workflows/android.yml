@@ -1,0 +1,23 @@
+name: Compilar APK (Android)
+
+on:
+  workflow_dispatch:        # boton "Run workflow" en la pestaña Actions
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compilar con Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
+        with:
+          command: buildozer android debug
+          buildozer_version: stable
+      - name: Subir el APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: echo-knight-apk
+          path: ${{ steps.buildozer.outputs.filename }}
