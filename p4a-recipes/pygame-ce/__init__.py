@@ -33,7 +33,9 @@ class Pygame2Recipe(CompiledComponentsPythonRecipe):
             with open(join("buildconfig", "Setup.Android.SDL2.in")) as f:
                 setup_template = f.read()
             bd = self.ctx.bootstrap.build_dir
-            ndk_lib_dir = join(self.ctx.ndk_platform, "usr", "lib")
+            # versiones nuevas de python-for-android ya no tienen ctx.ndk_platform: -L de la NDK solo si existe
+            ndk_platform = getattr(self.ctx, "ndk_platform", None)
+            ndk_lib_opt = (" -L" + join(ndk_platform, "usr", "lib")) if ndk_platform else ""
             png = self.get_recipe("png", self.ctx)
             png_lib_dir = join(png.get_build_dir(arch.arch), ".libs")
             png_inc_dir = png.get_build_dir(arch)
@@ -41,7 +43,7 @@ class Pygame2Recipe(CompiledComponentsPythonRecipe):
             jpeg_inc_dir = jpeg_lib_dir = jpeg.get_build_dir(arch.arch)
             setup_file = setup_template.format(
                 sdl_includes=(" -I" + join(bd, "jni", "SDL", "include") + " -L" + join(bd, "libs", arch.arch)
-                              + " -L" + png_lib_dir + " -L" + jpeg_lib_dir + " -L" + ndk_lib_dir),
+                              + " -L" + png_lib_dir + " -L" + jpeg_lib_dir + ndk_lib_opt),
                 sdl_ttf_includes="-I" + join(bd, "jni", "SDL2_ttf"),
                 sdl_image_includes="-I" + join(bd, "jni", "SDL2_image"),
                 sdl_mixer_includes="-I" + join(bd, "jni", "SDL2_mixer"),
