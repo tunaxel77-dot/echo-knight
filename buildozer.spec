@@ -8,7 +8,7 @@ source.exclude_dirs = venv,bin,.github,__pycache__,.buildozer
 version = 0.1.0
 
 # pygame-ce NO viene en python-for-android: la receta local esta en ./p4a-recipes/pygame-ce
-requirements = python3,pygame-ce
+requirements = python3,cython,pygame-ce
 # Si la compilacion falla por Cython, prueba:  requirements = python3,pygame-ce,cython==0.29.36
 
 orientation = landscape
