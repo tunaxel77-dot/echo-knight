@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Receta local de python-for-android para pygame-ce (SDL2).
-ESTADO: SIN PROBAR. Escrita siguiendo la receta 'pygame' 2.x de python-for-android y la guia publica
-https://gist.github.com/emersonmx/c5bba202506e3c3d2d828ad278a8d5fe (misma estructura: version 2.5.0,
-dependencias sdl2/sdl2_image/sdl2_mixer/sdl2_ttf/setuptools/jpeg/png, plantilla buildconfig/Setup.Android.SDL2.in).
-Si falla al compilar, sustituye este archivo por el de esa guia (boton 'Raw') y vuelve a lanzar la compilacion.
-Aviso heredado: freetype, postmidi y libjpeg no forman parte del build; es usable pero incompleto."""
+"""Receta local de python-for-android para pygame-ce (SDL2). SIN PROBAR."""
 from os.path import join
 
 from pythonforandroid.recipe import CompiledComponentsPythonRecipe
@@ -16,8 +11,8 @@ class Pygame2Recipe(CompiledComponentsPythonRecipe):
     url = "https://github.com/pygame-community/pygame-ce/archive/refs/tags/{version}.tar.gz"
     site_packages_name = "pygame"
     name = "pygame-ce"
-    depends = ["sdl2", "sdl2_image", "sdl2_mixer", "sdl2_ttf", "setuptools", "jpeg", "png"]
-    call_hostpython_via_targetpython = False      # por setuptools
+    depends = ["sdl2", "sdl2_image", "sdl2_mixer", "sdl2_ttf", "setuptools", "jpeg", "png", "cython"]
+    call_hostpython_via_targetpython = False
     install_in_hostpython = False
 
     def get_recipe_env(self, arch=None, with_flags_in_cc=True):
@@ -33,7 +28,6 @@ class Pygame2Recipe(CompiledComponentsPythonRecipe):
             with open(join("buildconfig", "Setup.Android.SDL2.in")) as f:
                 setup_template = f.read()
             bd = self.ctx.bootstrap.build_dir
-            # versiones nuevas de python-for-android ya no tienen ctx.ndk_platform: -L de la NDK solo si existe
             ndk_platform = getattr(self.ctx, "ndk_platform", None)
             ndk_lib_opt = (" -L" + join(ndk_platform, "usr", "lib")) if ndk_platform else ""
             png = self.get_recipe("png", self.ctx)
